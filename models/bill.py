@@ -29,7 +29,7 @@ class Bill:
     who_is_paying: Literal['user', 'friend']
     friend_id: str
     id: Optional[str] = field(default_factory=lambda: str(uuid4()))
-    created_at: datetime = field(default_factory=datetime.now)
+    created_at: datetime = field(default_factory=lambda: datetime.now())
     
     def __post_init__(self):
         """Validate the bill data after initialization."""
@@ -78,19 +78,26 @@ class Bill:
     
     def get_user_share(self) -> float:
         """
-        Get the user's share of the bill.
+        Get the amount paid by the user.
+        
+        Note: This returns the amount paid by the user, which may be
+        different from their actual share depending on who is paying.
         
         Returns:
-            User's share amount
+            Amount paid by the user
         """
         return self.paid_by_user
     
     def get_friend_share(self) -> float:
         """
-        Get the friend's share of the bill.
+        Get the amount paid by the friend.
+        
+        Note: This returns the amount paid by the friend (calculated as
+        total - user's payment), which may be different from their actual
+        share depending on who is paying.
         
         Returns:
-            Friend's share amount
+            Amount paid by the friend
         """
         return self.paid_by_friend
     
